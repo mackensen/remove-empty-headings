@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class RemoveEmptyHeadings
+ *
+ * @package Remove_Empty_Headings
+ */
 
 /**
  * Removes empty headings from a text block.
@@ -25,21 +30,33 @@ class Remove_Empty_Headings {
 	 * @return string
 	 */
 	public static function remove_headings( $content ) {
-		$dom = self::load_document( $content );
-		$tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' );
+		$dom      = self::load_document( $content );
+		$tags     = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' );
+		$removals = 0;
 		foreach ( $tags as $tag ) {
 			$headings = $dom->getElementsByTagName( $tag );
-			if ( 0 == $headings->length ) {
+			if ( 0 === $headings->length ) {
 				continue;
 			}
 
 			// Remove all headings with empty text.
 			foreach ( $headings as $heading ) {
+				// @codingStandardsIgnoreStart
+				// Ignoring standards because of the DOMDocument properties.
 				if ( empty( $heading->textContent ) ) {
 					$heading->parentNode->removeChild( $heading );
+					$removals++;
 				}
+				// @codingStandardsIgnoreEnd
 			}
 		}
-		return $dom->saveHTML();
+
+		// Only modify the content if we removed something.
+		if ( 0 === $removals ) {
+			return $content;
+		}
+		$html = $dom->saveHTML( $dom->getElementsByTagName( 'body' )->item( 0 ) );
+		$html = str_replace( array( '<body>', '</body>' ), '', $html );
+		return $html;
 	}
 }

@@ -12,6 +12,7 @@
  * @package         Remove_Empty_Headings
  */
 
+// Load the actual class.
 require( 'includes/class-remove-empty-headings.php' );
 
-add_filter( 'the_content', array( 'Remove_Empty_Headings', 'remove_headings' ), 20 );
+add_filter( 'content_save_pre', array( 'Remove_Empty_Headings', 'remove_headings' ), 10, 1 );
