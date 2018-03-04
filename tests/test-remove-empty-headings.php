@@ -25,15 +25,16 @@ class RemoveEmptyHeadingsTest extends WP_UnitTestCase {
 		$content = $this->cleanContent( get_post( $pageid )->post_content );
 		$this->assertEquals( '<h4><a name="212">AAA</a></h4><h4><a name="247"></a>Lorem Ipsum</h4><h4><a name="213">BBB</a></h4>', $content );
 
+		// Test a link.
 		$page    = array(
 			'title'        => 'First test page',
 			'type'         => 'page',
 			'post_status'  => 'publish',
-			'post_content' => "<h4><a name=\"212\"></a></h4>\n<h4><a name=\"247\"></a>Lorem Ipsum</h4>\n<h4><a name=\"213\"></a></h4>",
+			'post_content' => "<ul><li><a href=\"#247\">247</a></li></ul><h4><a name=\"212\"></a></h4>\n<h4><a name=\"247\"></a>Lorem Ipsum</h4>\n<h4><a name=\"213\"></a></h4>",
 		);
 		$pageid  = wp_insert_post( $page );
 		$content = $this->cleanContent( get_post( $pageid )->post_content );
-		$this->assertEquals( '<h4><a name="247"></a>Lorem Ipsum</h4>', $content );
+		$this->assertEquals( '<ul><li><a href="#247">247</a></li></ul><h4><a name="247"></a>Lorem Ipsum</h4>', $content );
 
 		$page    = array(
 			'title'        => 'Second test page',

@@ -19,7 +19,13 @@ class Remove_Empty_Headings {
 		// This uses the logic from https://techsparx.com/software-development/wordpress/dom-document-pitfalls.html
 		// and https://gist.github.com/westonruter/4b1fca6f20fbc95c3c34.
 		$dom = new DOMDocument( null, 'UTF-8' );
+		// @codingStandardsIgnoreStart
+		$dom->substituteEntities = false;
+		$dom->resolveExternals   = false;
+		// @codingStandardsIgnoreEnd
+		libxml_use_internal_errors( true );
 		$dom->loadHTML( '<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"></head><body>' . $content . '</body></html>' );
+		libxml_clear_errors();
 		return $dom;
 	}
 
@@ -57,6 +63,7 @@ class Remove_Empty_Headings {
 		}
 		$html = $dom->saveHTML( $dom->getElementsByTagName( 'body' )->item( 0 ) );
 		$html = str_replace( array( '<body>', '</body>' ), '', $html );
+		$html = str_replace( '%5C%22', '', $html );
 		return $html;
 	}
 }
